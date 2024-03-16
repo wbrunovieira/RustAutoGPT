@@ -2,6 +2,7 @@ use crossterm::{
   style::{Color, ResetColor, SetForegroundColor},
   ExecutableCommand,
 };
+use reqwest::Client;
 use std::io::{stdin, stdout};
 
 #[derive(PartialEq, Debug)]
@@ -57,6 +58,10 @@ pub fn get_user_response(question: &str) -> String {
      return user_response.trim().to_string();
 }
 
+pub async fn check_status_code(client:&Client, url: &str) -> Result<u16, reqwest::Error>{
+  let response:reqwest::Response = client.get(url).send().await?;
+  Ok(response.status().as_u16())
+}
 #[cfg(test)]
 mod tests {
   use super::*;
