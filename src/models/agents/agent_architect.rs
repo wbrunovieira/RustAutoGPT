@@ -69,4 +69,37 @@ async fn call_determine_external_urls(
   }
 
 
+#[async_trait]
+impl SpecialFunctions for AgentSolutionArchitect {
+    fn get_attributes_from_agent(&self) -> &BasicAgent {
+        &self.attributes
+    }
+async fn execute(&mut self, facsheet: &mut FactSheet) -> Result <(), Box<dyn std::error::Error>> {
+
+  while self.attributes.state != AgentState::Finished {
+    match  self.attributes.state {
+        AgentState::Discovery => {
+          let project_scope:ProjectScope = self.call_project_scope(facsheet).await;
+
+          if project_scope.is_external_url_required {
+            self.call_determine_external_urls(facsheet, facsheet.project_description.clone()).await;
+            self.attributes.state = AgentState::UnitTesting;
+          }
+        }
+
+        AgentState::UnitTesting => {
+
+        }
+
+        _ => {
+          self.attributes.state = AgentState::Finished;
+        }
+    }
+  }
+   
+        
+  Ok(())
+}
+}
+  
 
