@@ -88,9 +88,54 @@ async fn execute(&mut self, facsheet: &mut FactSheet) -> Result <(), Box<dyn std
         }
 
         AgentState::UnitTesting => {
+          let mut exclude_url :Vec<String> = vec![];
+          let client:Client = Client::builder()
+              .timeout(Duration::from_secs(5))
+              .build()
+              .unwrap();
+            
+             // Defining urls to check
+             let urls: &Vec<String> = facsheet
+             .external_url
+             .as_ref()
+             .expect("No URL object on factsheet");
 
-        }
+                 // Find faulty urls
+                 for url in urls {
+                  let endpoint_str: String = format!("Testing URL Endpoint: {}", url);
+                  PrintCommand::UnitTest.print_agent_message(
+                      self.attributes.position.as_str(),
+                      endpoint_str.as_str(),
+                  );
 
+                      // Perform URL Test
+                      match check_status_code(&client, url).await {
+                        Ok(status_code) => {
+                            if status_code != 200 {
+                                exclude_url.push(url.clone())
+                            }
+                        }
+                        Err(e) => println!("Error checking {}: {}", url, e),
+                    }
+                
+        };
+
+         // Exclude any faulty urls
+         if exclude_url.len() > 0 {
+          let new_urls: Vec<String> = facsheet
+              .external_url
+              .as_ref()
+              .unwrap()
+              .iter()
+              .filter(|url| !exclude_url.contains(&url))
+              .cloned()
+              .collect();
+          facsheet.external_url = Some(new_urls);
+         }
+             // Confirm done
+             self.attributes.state = AgentState::Finished;
+      }
+            // Default to Finished state
         _ => {
           self.attributes.state = AgentState::Finished;
         }
@@ -101,5 +146,4 @@ async fn execute(&mut self, facsheet: &mut FactSheet) -> Result <(), Box<dyn std
   Ok(())
 }
 }
-  
 
