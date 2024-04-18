@@ -9,7 +9,7 @@ pub fn print_project_scope(_project_description: &str) {
     ///   {
     ///     "is_crud_required": bool, // true if site needs CRUD functionality
     ///     "is_user_login_and_logout": bool // true if site needs users to be able to log in and log out
-    ///     "is_external_urls_required": bool // true if site needs to fetch data from third part providers
+    ///     "is_external_url_required": bool // true if site needs to fetch data from third part providers
     ///   }
     /// Example 1:
     ///   user_request = "I need a full stack website that accepts users and gets stock price data"
@@ -17,7 +17,7 @@ pub fn print_project_scope(_project_description: &str) {
     ///   {
     ///     "is_crud_required": true
     ///     "is_user_login_and_logout": true
-    ///     "is_external_urls_required": bool true
+    ///     "is_external_url_required": bool true
     ///   }
     /// Example 2:
     ///   user_request = "I need a simple TODO app"
@@ -25,7 +25,7 @@ pub fn print_project_scope(_project_description: &str) {
     ///   {
     ///     "is_crud_required": true
     ///     "is_user_login_and_logout": false
-    ///     "is_external_urls_required": bool false
+    ///     "is_external_url_required": bool false
     ///   }
     println!(OUTPUT)
 }

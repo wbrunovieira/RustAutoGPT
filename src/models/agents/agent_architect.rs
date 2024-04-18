@@ -17,6 +17,7 @@ pub struct AgentSolutionArchitect {
 
 impl AgentSolutionArchitect {
     pub fn new() -> Self {
+      println!("AgentSolutionArchitect::new() called");
         let attributes: BasicAgent = BasicAgent {
             objective: "Gathers information and design solutions for website development"
                 .to_string(),
@@ -24,7 +25,7 @@ impl AgentSolutionArchitect {
             state: AgentState::Discovery,
             memory: vec![],
         };
-
+        println!("attributes: {:?}", attributes);
         Self { attributes }
     }
 
@@ -48,7 +49,7 @@ impl AgentSolutionArchitect {
    
 
 // Retrieve Project Scope
-async fn call_determine_external_urls(
+async fn call_determine_external_url(
   &mut self,
   factsheet: &mut FactSheet,
   msg_context: String,
@@ -82,7 +83,7 @@ async fn execute(&mut self, facsheet: &mut FactSheet) -> Result <(), Box<dyn std
           let project_scope:ProjectScope = self.call_project_scope(facsheet).await;
 
           if project_scope.is_external_url_required {
-            self.call_determine_external_urls(facsheet, facsheet.project_description.clone()).await;
+            self.call_determine_external_url(facsheet, facsheet.project_description.clone()).await;
             self.attributes.state = AgentState::UnitTesting;
           }
         }
@@ -145,5 +146,34 @@ async fn execute(&mut self, facsheet: &mut FactSheet) -> Result <(), Box<dyn std
         
   Ok(())
 }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[tokio::test]
+    async fn tests_solution_architect() {
+        let mut agent: AgentSolutionArchitect = AgentSolutionArchitect::new();
+
+        let mut factsheet: FactSheet = FactSheet {
+          project_description: "Build a full stack website with user login and logout that shows latest Forex prices".to_string(),
+          project_scope: None,
+          external_url: None,
+          backend_code: None,
+          api_endpoint_schema: None,
+    };
+
+        agent.execute(&mut factsheet).await.expect("Unable to execute Solutions Architect Agent");
+        assert!(factsheet.project_scope != None);
+        assert!(factsheet.external_url.is_some());
+
+        
+          
+
+       dbg!(factsheet);
+    }
+
+        
 }
 
