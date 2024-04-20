@@ -4,7 +4,8 @@ use crate::models::agents::agent_traits::{FactSheet, SpecialFunctions};
 use crate::ai_functions::aifunc_managing::convert_user_input_to_goal;
 use crate::helpers::general::ai_task_request;
 use crate::models::agents::agent_architect::AgentSolutionArchitect;
-use crate::models::agents::agent_backend::AgentBackendDeveloper;
+
+
 
 #[derive(Debug)]
 pub struct ManagingAgent {
@@ -56,7 +57,7 @@ impl ManagingAgent {
 
     fn create_agents(&mut self) {
         self.add_agent(Box::new(AgentSolutionArchitect::new()));
-        self.add_agent(Box::new(AgentBackendDeveloper::new()));
+       
     }
 
     pub async fn execute_project(&mut self) {
@@ -66,8 +67,8 @@ impl ManagingAgent {
             let _agent_res: Result<(), Box<dyn std::error::Error>> =
                 agent.execute(&mut self.factsheet).await;
 
-            // let agent_info: &BasicAgent = agent.get_attributes_from_agent();
-            // dbg!(agent_info);
+             let agent_info: &BasicAgent = agent.get_attributes_from_agent();
+             dbg!(agent_info);
         }
     }
 }
@@ -75,7 +76,6 @@ impl ManagingAgent {
 #[cfg(test)]
 mod tests {
     use super::*;
-
     #[tokio::test]
     async fn tests_managing_agent() {
         let usr_request: &str = "need a full stack app that fetches and tracks my fitness progress. Needs to include timezone info from the web.";

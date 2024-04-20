@@ -62,7 +62,7 @@ async fn call_determine_external_url(
   )
   .await;
 
-  factsheet.external_url = Some(ai_response);
+  factsheet.external_urls = Some(ai_response);
   self.attributes.state = AgentState::UnitTesting;
 }
   
@@ -97,7 +97,7 @@ async fn execute(&mut self, facsheet: &mut FactSheet) -> Result <(), Box<dyn std
             
              // Defining urls to check
              let urls: &Vec<String> = facsheet
-             .external_url
+             .external_urls
              .as_ref()
              .expect("No URL object on factsheet");
 
@@ -124,14 +124,14 @@ async fn execute(&mut self, facsheet: &mut FactSheet) -> Result <(), Box<dyn std
          // Exclude any faulty urls
          if exclude_url.len() > 0 {
           let new_urls: Vec<String> = facsheet
-              .external_url
+              .external_urls
               .as_ref()
               .unwrap()
               .iter()
               .filter(|url| !exclude_url.contains(&url))
               .cloned()
               .collect();
-          facsheet.external_url = Some(new_urls);
+          facsheet.external_urls = Some(new_urls);
          }
              // Confirm done
              self.attributes.state = AgentState::Finished;
@@ -159,14 +159,14 @@ mod tests {
         let mut factsheet: FactSheet = FactSheet {
           project_description: "Build a full stack website with user login and logout that shows latest Forex prices".to_string(),
           project_scope: None,
-          external_url: None,
+          external_urls: None,
           backend_code: None,
           api_endpoint_schema: None,
     };
 
         agent.execute(&mut factsheet).await.expect("Unable to execute Solutions Architect Agent");
         assert!(factsheet.project_scope != None);
-        assert!(factsheet.external_url.is_some());
+        assert!(factsheet.external_urls.is_some());
 
         
           
