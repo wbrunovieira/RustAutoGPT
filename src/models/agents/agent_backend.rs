@@ -331,7 +331,7 @@ mod tests {
       "project_scope": {
         "is_crud_required": true,
         "is_user_login_and_logout": true,
-        "is_external_urls_required": true
+        "is_external_url_required": true
       },
       "external_urls": [
         "http://worldtimeapi.org/api/timezone"
